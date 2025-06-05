@@ -1,0 +1,32 @@
+# tasks file for apache2
+
+  - name: Install web components
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    loop:
+      - apache2
+      - libapache2-mod-wsgi-py3
+
+  - name: Ensure mod_wsgi is enabled
+    apache2_module:
+      name: wsgi
+      state: present
+    notify: restart apache2
+
+  - name: Deactivate default Apache site
+    file:
+      path: /etc/apache2/sites-enabled/000-default.conf
+      state: absent
+    notify: restart apache2
+
+  - name: Ensure Apache2 is started and enabled
+    service:
+      name: apache2
+      state: started
+      enabled: yes
+
+  - name: Ensure Apache2 is started in Docker
+    command: service apache2 start
+    when: ansible_virtualization_type == "docker"

@@ -1,0 +1,9 @@
+# tasks file for control
+  - name: install tools
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    loop:
+      - curl
+      - python3-httplib2

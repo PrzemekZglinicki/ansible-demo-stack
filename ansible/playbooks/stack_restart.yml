@@ -1,24 +1,59 @@
   - hosts: loadbalancer
     tasks:
-      - service: name=nginx state=stopped
-      - wait_for: port=80 state=drained
+      - name: Stop nginx
+        service:
+          name: nginx
+          state: stopped
+
+      - name: Wait for nginx port 80 to drain
+        wait_for:
+          port: 80
+          state: drained
 
   - hosts: webserver
     tasks:
-      - service: name=apache2 state=stopped
-      - wait_for: port=80 state=stopped
+      - name: Stop apache2
+        service:
+          name: apache2
+          state: stopped
+
+      - name: Wait for apache2 port 80 to stop
+        wait_for:
+          port: 80
+          state: stopped
 
   - hosts: database
     tasks:
-      - service: name=mysql state=restarted
-      - wait_for: port=3306 state=started
+      - name: Restart MySQL
+        service:
+          name: mysql
+          state: restarted
+
+      - name: Wait for MySQL port 3306 to be available
+        wait_for:
+          port: 3306
+          state: started
 
   - hosts: webserver
     tasks:
-      - service: name=apache2 state=started
-      - wait_for: port=80 state=started
+      - name: Start apache2
+        service:
+          name: apache2
+          state: started
+
+      - name: Wait for apache2 port 80 to be available
+        wait_for:
+          port: 80
+          state: started
 
   - hosts: loadbalancer
     tasks:
-      - service: name=nginx state=started
-      - wait_for: port=80 state=started
+      - name: Start nginx
+        service:
+          name: nginx
+          state: started
+
+      - name: Wait for nginx port 80 to be available
+        wait_for:
+          port: 80
+          state: started
