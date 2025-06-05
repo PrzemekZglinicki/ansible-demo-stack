@@ -20,6 +20,8 @@ RUN useradd -ms /bin/bash ansible && \
     echo "ansible ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
 
 # SSH setup for root and ansible user
+COPY ssh_config /root/.ssh/config
+
 RUN mkdir /var/run/sshd && \
     mkdir -p /root/.ssh /home/ansible/.ssh && \
     chmod 700 /root/.ssh /home/ansible/.ssh && \
