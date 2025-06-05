@@ -2,41 +2,6 @@
 
 ## About
 
-Ansible example usage. The project contains docker based setup for the ansible lab - 5 actors contains loadbalancer, webserver hosts, database and control host. Project crated for learing purpose.
-
-## Prerequisites
-1. **Install Docker**
-2. **Install Ansible**
-
-## Usage
-
-Create ssh-key to connect from ansible to docker hosts. I am using id_ed25519 key.
-
-To build and run docker containters:
-```bash
-cd docker && docker compose build --build-arg SSH_PUB_KEY="$(cat ~/.ssh/id_ed25519.pub)" && docker compose up -d && cd -
-```
-
-To check whether docker containers starts correctly:
-```bash
-docker ps
-```
-
-To set up infrastructure run:
-```bash
-cd ansible && ansible-playbook site.yml
-```
-
-To check if everythink works and has connections to each other:
-```bash
-ansible-playbook playbooks/stack_status.yml
-```
-
-
-# ansible-demo-stack
-
-## About
-
 This project demonstrates an example setup using **Ansible** to manage a **Docker-based lab environment**.
 It includes 5 containers acting as different infrastructure components:
 
