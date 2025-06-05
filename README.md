@@ -133,7 +133,6 @@ Host control
   IdentityFile ~/.ssh/id_ed25519
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
-
 Host lb01
   HostName 127.0.0.1
   Port 2201
@@ -141,7 +140,6 @@ Host lb01
   IdentityFile ~/.ssh/id_ed25519
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
-
 ... (others omitted for brevity)
 ```
 
