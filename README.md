@@ -35,7 +35,7 @@ chmod 600 ~/.vault_pass.txt
 
 Ansible will automatically use this file to decrypt vault-encrypted data when executing playbooks.
 
-> 🔒 **Never commit this file to version control.** It's already included in `.gitignore` for safety.
+> 🔒 **Note!** This method is shown for example purposes only. On a production system, never store or show plaintext Vault passwords in a world-readable file.
 
 If you'd like to change the vault password or re-encrypt variables:
 
