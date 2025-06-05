@@ -1,0 +1,15 @@
+[loadbalancer]
+lb01 ansible_host=127.0.0.1 ansible_port=2201
+
+[webserver]
+app01 ansible_host=127.0.0.1 ansible_port=2211
+app02 ansible_host=127.0.0.1 ansible_port=2212
+
+[database]
+db01 ansible_host=127.0.0.1 ansible_port=2222
+
+[control]
+control ansible_host=127.0.0.1 ansible_port=2200
+
+[all:vars]
+ansible_user=root

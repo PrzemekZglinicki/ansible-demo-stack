@@ -1,0 +1,49 @@
+version: '3'
+services:
+  control:
+    build: ./env
+    hostname: control
+    depends_on:
+      - lb01
+      - app01
+      - app02
+      - db01
+    ports:
+      - "2200:22"
+    volumes:
+      - ./:/work
+
+  lb01:
+    build: ./env
+    hostname: lb01
+    depends_on:
+      - app01
+      - app02
+    ports:
+      - "2201:22"
+      - "8001:80"
+
+  app01:
+    build: ./env
+    hostname: app01
+    depends_on:
+      - db01
+    ports:
+      - "2211:22"
+      - "8081:80"
+
+  app02:
+    build: ./env
+    hostname: app02
+    depends_on:
+      - db01
+    ports:
+      - "2212:22"
+      - "8082:80"
+
+  db01:
+    build: ./env
+    hostname: db01
+    ports:
+      - "2222:22"
+      - "3306:3306"

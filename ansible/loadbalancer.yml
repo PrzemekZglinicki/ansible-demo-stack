@@ -1,0 +1,47 @@
+  - hosts: loadbalancer
+    become: true
+    tasks:
+      - name: install tools
+        apt: name={{ item }} state=present update_cache=yes
+        with_items:
+          - python3-httplib2
+          - nginx
+
+      - name: configure nginx site
+        template: src=templates/nginx.conf.j2 dest=/etc/nginx/sites-available/demo
+          mode=0644
+        notify: restart nginx
+
+      - name: de-activate default nginx site
+        file: path=/etc/nginx/sites-enabled/default state=absent
+        notify: restart nginx
+
+      - name: activate demo nginx site
+        file: src=/etc/nginx/sites-available/demo dest=/etc/nginx/sites-enabled/demo
+          state=link
+        notify: restart nginx
+
+      - name: validate nginx config before reload
+        command: nginx -t
+        register: nginx_test
+        changed_when: false
+        failed_when: nginx_test.rc != 0
+
+      - name: ensure nginx started
+        service: name=nginx state=started enabled=yes
+
+      - name: Ensure nginx is started
+        command: service nginx start
+        when: ansible_virtualization_type == "docker"
+
+    handlers:
+      - name: restart nginx
+        block:
+          - name: validate nginx config before reload
+            command: nginx -t
+            register: nginx_test
+            changed_when: false
+            failed_when: nginx_test.rc != 0
+
+          - name: reload nginx
+            service: name=nginx state=restarted
