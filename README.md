@@ -22,6 +22,29 @@ The project is intended for **learning and experimenting with Ansible** in a sim
 
 ---
 
+## 🔐 Vault Password File
+
+Some Ansible variables (e.g., database passwords) are stored securely using **Ansible Vault**.
+
+To run the playbooks, you must create a `~/.vault_pass.txt` file with the decryption password:
+
+```bash
+echo pass123 > ~/.vault_pass.txt
+chmod 600 ~/.vault_pass.txt
+```
+
+Ansible will automatically use this file to decrypt vault-encrypted data when executing playbooks.
+
+> 🔒 **Never commit this file to version control.** It's already included in `.gitignore` for safety.
+
+If you'd like to change the vault password or re-encrypt variables:
+
+```bash
+ansible-vault edit group_vars/all/vault.yml
+```
+
+---
+
 ## Usage
 
 ### 🔐 1. Generate an SSH key (if not done already)

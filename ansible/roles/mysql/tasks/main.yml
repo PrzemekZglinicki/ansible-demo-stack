@@ -1,0 +1,41 @@
+# tasks file for mysql
+
+  - name: Install MySQL and Python support
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    loop:
+      - mysql-server
+      - python3-mysqldb
+
+  - name: Ensure MySQL listens on all interfaces
+    lineinfile:
+      path: /etc/mysql/mysql.conf.d/mysqld.cnf
+      regexp: '^bind-address'
+      line: 'bind-address = 0.0.0.0'
+      insertafter: '^\[mysqld\]'
+    notify: restart mysql
+
+  - name: Ensure MySQL is started and enabled
+    service:
+      name: mysql
+      state: started
+      enabled: yes
+
+  - name: Ensure MySQL is started (Docker fallback)
+    command: service mysql start
+    when: ansible_virtualization_type == "docker"
+
+  - name: Create demo database
+    mysql_db:
+      name: "{{ db_name }}"
+      state: present
+
+  - name: Create demo user with access from any host
+    mysql_user:
+      name: "{{ db_user_name }}"
+      password: "{{ db_user_pass }}"
+      priv: "{{ db_name }}.*:ALL"
+      host: "{{ db_user_host }}"
+      state: present

@@ -1,0 +1,55 @@
+# tasks file for nginx
+
+  - name: Install tools
+    apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+    loop:
+      - python3-httplib2
+      - nginx
+
+  - name: Configure nginx sites
+    template:
+      src: nginx.conf.j2
+      dest: "/etc/nginx/sites-available/{{ item.key }}"
+      mode: '0644'
+    loop: "{{ sites | dict2items }}"
+    notify: restart nginx
+
+  - name: Get active sites
+    command: ls -1 /etc/nginx/sites-enabled
+    register: active_sites
+    changed_when: false
+
+  - name: Deactivate all nginx sites
+    file:
+      path: "/etc/nginx/sites-enabled/{{ item }}"
+      state: absent
+    loop: "{{ active_sites.stdout_lines }}"
+    when: item not in sites.keys()
+    notify: restart nginx
+
+  - name: Activate nginx sites
+    file:
+      src: "/etc/nginx/sites-available/{{ item.key }}"
+      dest: "/etc/nginx/sites-enabled/{{ item.key }}"
+      state: link
+    loop: "{{ sites | dict2items }}"
+    notify: restart nginx
+
+  - name: Validate nginx config before reload
+    command: nginx -t
+    register: nginx_test
+    changed_when: false
+    failed_when: nginx_test.rc != 0
+
+  - name: Ensure nginx is started
+    service:
+      name: nginx
+      state: started
+      enabled: yes
+
+  - name: Ensure nginx is started (Docker fallback)
+    command: service nginx start
+    when: ansible_virtualization_type == "docker"

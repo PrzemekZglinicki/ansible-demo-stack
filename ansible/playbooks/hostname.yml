@@ -2,4 +2,3 @@
     tasks:
       - name: get server hostname
         command: hostname
-
