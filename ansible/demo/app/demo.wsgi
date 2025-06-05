@@ -1,0 +1,11 @@
+with open('/var/www/demo/.venv/bin/activate_this.py') as file_:
+    exec(file_.read(), dict(__file__='/var/www/demo/.venv/bin/activate_this.py'))
+
+import os
+os.environ['DATABASE_URL'] = 'mysql://demo:demo@db01/demo'
+
+import sys
+sys.path.insert(0, '/var/www/demo')
+
+from demo import app as application
+
