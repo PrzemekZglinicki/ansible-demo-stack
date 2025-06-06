@@ -1,4 +1,6 @@
+---
   - hosts: loadbalancer
+    gather_facts: false
     tasks:
       - name: Stop nginx
         service:
@@ -11,6 +13,7 @@
           state: drained
 
   - hosts: webserver
+    gather_facts: false
     tasks:
       - name: Stop apache2
         service:
@@ -23,6 +26,7 @@
           state: stopped
 
   - hosts: database
+    gather_facts: false
     tasks:
       - name: Restart MySQL
         service:
@@ -35,6 +39,7 @@
           state: started
 
   - hosts: webserver
+    gather_facts: false
     tasks:
       - name: Start apache2
         service:
@@ -47,6 +52,7 @@
           state: started
 
   - hosts: loadbalancer
+    gather_facts: false
     tasks:
       - name: Start nginx
         service:
