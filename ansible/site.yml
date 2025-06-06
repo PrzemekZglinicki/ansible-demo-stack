@@ -1,3 +1,14 @@
+---
+  - hosts: all
+    become: true
+    gather_facts: false
+    tasks:
+      - name: update apt cache
+        apt:
+          update_cache: yes
+          cache_valid_time: 86400
+    tags: ["packages"]
+
   - import_playbook: control.yml
   - import_playbook: database.yml
   - import_playbook: webserver.yml

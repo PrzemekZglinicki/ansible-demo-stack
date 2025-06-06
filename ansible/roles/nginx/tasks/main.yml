@@ -1,13 +1,14 @@
+---
 # tasks file for nginx
 
   - name: Install tools
     apt:
       name: "{{ item }}"
       state: present
-      update_cache: yes
     loop:
       - python3-httplib2
       - nginx
+    tags: ['packages']
 
   - name: Configure nginx sites
     template:
@@ -16,11 +17,21 @@
       mode: '0644'
     loop: "{{ sites | dict2items }}"
     notify: restart nginx
+    tags: ['configure']
 
   - name: Get active sites
     command: ls -1 /etc/nginx/sites-enabled
     register: active_sites
-    changed_when: false
+    changed_when: "active_sites.stdout_lines != sites.keys()"
+    tags: ['configure']
+  - debug: var=vars
+    tags: ['configure']
+
+  - debug: var=active_sites
+    tags: ['configure']
+
+  - debug: var=active_sites.stdout_lines
+    tags: ['configure']
 
   - name: Deactivate all nginx sites
     file:
@@ -29,6 +40,7 @@
     loop: "{{ active_sites.stdout_lines }}"
     when: item not in sites.keys()
     notify: restart nginx
+    tags: ['configure']
 
   - name: Activate nginx sites
     file:
@@ -37,19 +49,23 @@
       state: link
     loop: "{{ sites | dict2items }}"
     notify: restart nginx
+    tags: ['configure']
 
   - name: Validate nginx config before reload
     command: nginx -t
     register: nginx_test
     changed_when: false
     failed_when: nginx_test.rc != 0
+    tags: ['configure']
 
   - name: Ensure nginx is started
     service:
       name: nginx
       state: started
       enabled: yes
+    tags: ['service']
 
   - name: Ensure nginx is started (Docker fallback)
     command: service nginx start
     when: ansible_virtualization_type == "docker"
+    tags: ['service']

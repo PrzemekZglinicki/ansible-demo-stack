@@ -1,10 +1,10 @@
+---
 # tasks file for demo_app
 
   - name: Install web components
     apt:
       name: "{{ item }}"
       state: present
-      update_cache: yes
     loop:
       - python3-pip
       - python3-virtualenv
@@ -12,6 +12,7 @@
       - pkg-config
       - default-libmysqlclient-dev
       - python3-mysqldb
+    tags: ['packages']
 
   - name: Copy demo app source
     copy:
@@ -19,6 +20,7 @@
       dest: /var/www/demo
       mode: '0755'
     notify: restart apache2
+    tags: ['configure']
 
   - name: Copy demo.wsgi
     template:
@@ -26,6 +28,7 @@
       dest: /var/www/demo.wsgi
       mode: '0755'
     notify: restart apache2
+    tags: ['configure']
 
   - name: Copy Apache virtual host config
     copy:
@@ -33,12 +36,14 @@
       dest: /etc/apache2/sites-available/demo.conf
       mode: '0755'
     notify: restart apache2
+    tags: ['configure']
 
   - name: Setup Python virtualenv
     pip:
       requirements: /var/www/demo/requirements.txt
       virtualenv: /var/www/demo/.venv
     notify: restart apache2
+    tags: ['configure']
 
   - name: Activate demo Apache site
     file:
@@ -46,3 +51,4 @@
       dest: /etc/apache2/sites-enabled/demo.conf
       state: link
     notify: restart apache2
+    tags: ['configure']

@@ -1,9 +1,12 @@
+---
   - hosts: loadbalancer
     become: true
+    gather_facts: false
     tasks:
       - name: Verify nginx service
         command:
           cmd: service nginx status
+        changed_when: false
 
       - name: Verify nginx is listening on port 80
         wait_for:
@@ -12,10 +15,12 @@
 
   - hosts: webserver
     become: true
+    gather_facts: false
     tasks:
       - name: Verify apache2 service
         command:
           cmd: service apache2 status
+        changed_when: false
 
       - name: Verify apache2 is listening on port 80
         wait_for:
@@ -24,10 +29,12 @@
 
   - hosts: database
     become: true
+    gather_facts: false
     tasks:
       - name: Verify MySQL service
         command:
           cmd: service mysql status
+        changed_when: false
 
       - name: Verify MySQL is listening on port 3306
         wait_for:
@@ -35,6 +42,7 @@
           timeout: 1
 
   - hosts: control
+    gather_facts: false
     tasks:
       - name: Verify end-to-end response
         uri:
@@ -63,6 +71,7 @@
         loop: "{{ lb_db.results }}"
 
   - hosts: loadbalancer
+    gather_facts: false
     tasks:
       - name: Verify backend response
         uri:

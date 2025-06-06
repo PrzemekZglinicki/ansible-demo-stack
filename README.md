@@ -10,7 +10,7 @@ It includes 5 containers acting as different infrastructure components:
 - `app01` & `app02`: webserver hosts (Flask app)
 - `db01`: MySQL database server
 
-The project is intended for **learning and experimenting with Ansible** in a simulated multi-host environment.
+The project is intended for **learning and experimenting with Ansible** in a simulated multi-host environment. Based on: www.udemy.com/course/mastering-ansible.
 
 ---
 

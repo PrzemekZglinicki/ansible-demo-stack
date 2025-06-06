@@ -7,6 +7,7 @@ yaml = YAML()
 yaml.indent(mapping=2, sequence=4, offset=2)
 yaml.preserve_quotes = True
 yaml.width = 80
+yaml.explicit_start = True
 
 def force_block_style(data):
     """
